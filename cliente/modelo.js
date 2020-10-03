@@ -11,25 +11,27 @@ function Juego(){
 		//asignacion --> this.partidas[codigo]= nueva partida
 	}
 	
-	thi
+	this.unirAPartida= function(nik){
+		//ToDo
+	}
 	this.obtenerCodigo=function(){
 		let cadena="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		let letras=cadena.split('');
 		let codigo=[];
-		for(int i=0;i<6;i++){
+		for(i=0;i<6;i++){
 			codigo.push(letras[randomInt(1,25)-1]);
 		}
 		return codigo.join('');
 	}
 }
 function Partida(num, owner){
-	this.numUsuarios=num;
+	this.maximo=num;// numero máximo de usuarios
 	this.owner=owner;
 	this.usuarios=[];// el index 0 es el propietario
 	//this.usuarios={}; versión array asociativo o diccionario
 	this.agregarUsuario=function(nick){
 		//comprobar que el nick es unico
-		//
+		//comprobar si maximo
 	}
 	this.agregarUsuario(owner);
 }
