@@ -1,63 +1,204 @@
 describe("El juego del impostor", function() {
   var juego;
-  var usuario;
+  var usr;
 
   beforeEach(function() {
-    juego = new Juego();
-	usr=new Usuario("Pepe",juego);
+  	juego=new Juego();
+  	usr=new Usuario("Pepe",juego);
   });
-  
-  it("configuracion inicial", function() {
-	  
-	  expect(Object.keys(juego.partidas).length).toEqual(0);
-	  expect(usr.nick).toEqual("Pepe");
-	  expect(usr.juego).not.toBe(undefined);
-	  
-	}); 
-	
-  it("el usuario Pepe crea una partida de 4 jugadores", function() {
-	  var num = 4;
-	  var inicial= new Inicial();
-	  var codigo=usr.crearPartida(num);
-	  expect(juego.partidas[codigo].maximo).toEqual(num);
-	  expect(codigo).not.toBe(undefined);
-	  expect(juego.partidas[codigo].nickOwner).toEqual(usr.nick);
-	  expect(Object.keys(juego.partidas[codigo].usuarios).length).toEqual(1);
-	  expect(juego.partidas[codigo].fase.nombre).toEqual("inicial");
-	}); 
-	
-  it("Los usuarios se unen a la partida introduciendo el codigo", function() {
-	  
-	  var num = 4;
-	  var nick ="Elena";
-	  var codigo=usr.crearPartida(num);
-	  juego.unirAPartida(codigo,"Ana");
-	  expect(Object.keys(juego.partidas[codigo].usuarios).length).toEqual(2);
-	  expect(juego.partidas[codigo].fase.nombre).toEqual("inicial");
-	  juego.unirAPartida(codigo,"Elena");
-	  expect(Object.keys(juego.partidas[codigo].usuarios).length).toEqual(3);
-	  expect(juego.partidas[codigo].fase.nombre).toEqual("inicial");
-	  juego.unirAPartida(codigo,"Tomas");
-	  expect(Object.keys(juego.partidas[codigo].usuarios).length).toEqual(4);
-	  expect(juego.partidas[codigo].fase.nombre).toEqual("completado");
-	  
-	}); 
-	
-	it("El owner de la partida unicia la partida cuando el quiera", function() {
-	  var num = 4;
-	  var nick ="Elena";
-	  var codigo=usr.crearPartida(num);
-	  juego.unirAPartida(codigo,"Ana");
-	  expect(Object.keys(juego.partidas[codigo].usuarios).length).toEqual(2);
-	  expect(juego.partidas[codigo].fase.nombre).toEqual("inicial");
-	  juego.unirAPartida(codigo,"Elena");
-	  expect(Object.keys(juego.partidas[codigo].usuarios).length).toEqual(3);
-	  expect(juego.partidas[codigo].fase.nombre).toEqual("inicial");
-	  juego.unirAPartida(codigo,"Tomas");
-	  expect(Object.keys(juego.partidas[codigo].usuarios).length).toEqual(4);
-	  expect(juego.partidas[codigo].fase.nombre).toEqual("completado");
-	  usr.iniciarPartida();
-	  expect(juego.partidas[codigo].fase.nombre).toEqual("jugando");  
-	});
 
+  it("comprobar valores iniciales del juego", function() {
+  	expect(Object.keys(juego.partidas).length).toEqual(0);
+  	expect(usr.nick).toEqual("Pepe");
+  	expect(usr.juego).not.toBe(undefined);
+  });
+
+  describe("el usr crea una partida de 4 jugadores",function(){
+	var codigo;
+	beforeEach(function() {
+	  	codigo=usr.crearPartida(4);
+	  });
+
+	it("se comprueba la partida",function(){ 	
+	  	expect(codigo).not.toBe(undefined);
+	  	expect(juego.partidas[codigo].nickOwner).toEqual(usr.nick);
+	  	expect(juego.partidas[codigo].maximo).toEqual(4);
+	  	expect(juego.partidas[codigo].fase.nombre).toEqual("inicial");
+	 	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(1);
+	  });
+
+	it("varios usuarios se unen a la partida",function(){
+		juego.unirAPartida(codigo,"ana");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(2);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("inicial");
+		juego.unirAPartida(codigo,"isa");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(3);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("inicial");	  	
+		juego.unirAPartida(codigo,"tomas");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(4);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("completado");
+	  });
+
+	it("El urs inicia la partida",function(){
+		juego.unirAPartida(codigo,"ana");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(2);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("inicial");
+		juego.unirAPartida(codigo,"isa");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(3);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("inicial");	  	
+		juego.unirAPartida(codigo,"tomas");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(4);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("completado");		
+		usr.iniciarPartida();
+		expect(juego.partidas[codigo].fase.nombre).toEqual("jugando");
+	});
+	it("El juego asigna las tareas",function(){
+		juego.unirAPartida(codigo,"ana");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(2);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("inicial");
+		juego.unirAPartida(codigo,"isa");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(3);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("inicial");	  	
+		juego.unirAPartida(codigo,"tomas");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(4);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("completado");		
+		usr.iniciarPartida();
+		expect(juego.partidas[codigo].usuarios["ana"].encargo).not.toEqual("ninguno");
+		expect(juego.partidas[codigo].usuarios["isa"].encargo).not.toEqual("ninguno");
+		expect(juego.partidas[codigo].usuarios["tomas"].encargo).not.toEqual("ninguno");
+		expect(juego.partidas[codigo].usuarios[usr.nick].encargo).not.toEqual("ninguno");
+		expect(juego.partidas[codigo].fase.nombre).toEqual("jugando");
+	});
+	it("El juego asigna impostor",function(){
+		juego.unirAPartida(codigo,"ana");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(2);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("inicial");
+		juego.unirAPartida(codigo,"isa");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(3);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("inicial");	  	
+		juego.unirAPartida(codigo,"tomas");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(4);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("completado");		
+		usr.iniciarPartida();
+		var count=0;
+		if (juego.partidas[codigo].usuarios["ana"].impostor == true){ count++;}
+		if (juego.partidas[codigo].usuarios["isa"].impostor == true){ count++;}
+		if (juego.partidas[codigo].usuarios["tomas"].impostor == true){ count++;}
+		if (juego.partidas[codigo].usuarios[usr.nick].impostor == true){ count++;}
+		expect(count).toEqual(1);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("jugando");
+	})
+   
+   });
+   describe("el usr crea una partida de 8 jugadores",function(){
+	var codigo;
+	beforeEach(function() {
+	  	codigo=usr.crearPartida(8);
+	  });
+	
+	it("se comprueba la partida",function(){ 	
+	  	expect(codigo).not.toBe(undefined);
+	  	expect(juego.partidas[codigo].nickOwner).toEqual(usr.nick);
+	  	expect(juego.partidas[codigo].maximo).toEqual(8);
+	  	expect(juego.partidas[codigo].fase.nombre).toEqual("inicial");
+	 	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(1);
+	  });
+	  
+	it("Se comprueba la asignacion de tareas",function(){
+		juego.unirAPartida(codigo,"ana");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(2);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("inicial");
+		juego.unirAPartida(codigo,"isa");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(3);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("inicial");	  	
+		juego.unirAPartida(codigo,"tomas");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(4);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("completado");
+		juego.unirAPartida(codigo,"jaime");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(5);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("completado");
+		juego.unirAPartida(codigo,"andrea");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(6);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("completado");
+		juego.unirAPartida(codigo,"pedro");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(7);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("completado");
+		juego.unirAPartida(codigo,"juan");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(8);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("completado");
+		usr.iniciarPartida();
+		expect(juego.partidas[codigo].usuarios["ana"].encargo).not.toEqual("ninguno");
+		expect(juego.partidas[codigo].usuarios["isa"].encargo).not.toEqual("ninguno");
+		expect(juego.partidas[codigo].usuarios["tomas"].encargo).not.toEqual("ninguno");
+		expect(juego.partidas[codigo].usuarios["jaime"].encargo).not.toEqual("ninguno");
+		expect(juego.partidas[codigo].usuarios["andrea"].encargo).not.toEqual("ninguno");
+		expect(juego.partidas[codigo].usuarios["pedro"].encargo).not.toEqual("ninguno");
+		expect(juego.partidas[codigo].usuarios["juan"].encargo).not.toEqual("ninguno");
+		expect(juego.partidas[codigo].usuarios[usr.nick].encargo).not.toEqual("ninguno");
+		expect(juego.partidas[codigo].fase.nombre).toEqual("jugando");
+	 });
+	 it("Se comprueba la asignacion de impostores",function(){
+		juego.unirAPartida(codigo,"ana");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(2);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("inicial");
+		juego.unirAPartida(codigo,"isa");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(3);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("inicial");	  	
+		juego.unirAPartida(codigo,"tomas");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(4);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("completado");
+		juego.unirAPartida(codigo,"jaime");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(5);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("completado");
+		juego.unirAPartida(codigo,"andrea");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(6);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("completado");
+		juego.unirAPartida(codigo,"pedro");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(7);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("completado");
+		juego.unirAPartida(codigo,"juan");
+	  	var num=Object.keys(juego.partidas[codigo].usuarios).length;
+	  	expect(num).toEqual(8);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("completado");
+		usr.iniciarPartida();
+		var count=0;
+		if (juego.partidas[codigo].usuarios["ana"].impostor == true){ count++;}
+		if (juego.partidas[codigo].usuarios["isa"].impostor == true){ count++;}
+		if (juego.partidas[codigo].usuarios["tomas"].impostor == true){ count++;}
+		if (juego.partidas[codigo].usuarios["juan"].impostor == true){ count++;}
+		if (juego.partidas[codigo].usuarios["pedro"].impostor == true){ count++;}
+		if (juego.partidas[codigo].usuarios["andrea"].impostor == true){ count++;}
+		if (juego.partidas[codigo].usuarios["jaime"].impostor == true){ count++;}
+		if (juego.partidas[codigo].usuarios[usr.nick].impostor == true){ count++;}
+		expect(count).toEqual(2);
+		expect(juego.partidas[codigo].fase.nombre).toEqual("jugando");
+	 });
+	});
 })
