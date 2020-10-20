@@ -53,6 +53,24 @@ function Partida(num,owner){
 	this.numUsuarios=function(){
 		return Object.keys(this.usuarios).length;
 	}
+	this.numImpostores=function(){
+		var count=0;
+		for (i in this.usuarios){
+			if (this.usuarios[i].impostor == true){
+				count++;
+			}
+		}
+		return count;
+	}
+	this.numTripulantes=function(){
+		var count=0;
+		for (i in this.usuarios){
+			if (this.usuarios[i].impostor == false){
+				count++;
+			}
+		}
+		return count;
+	}
 	this.comprobarMinimo=function(){
 		return Object.keys(this.usuarios).length>=4;		
 	}
@@ -109,8 +127,6 @@ function Completado(){
 			this.asignarimpostor(partida);
 			partida.puedeIniciarPartida();
 		}
-		//asignar encargos secuaencialmente a todos los usr
-		// asignar impostor: dado el  usuario array(Object.keys) eliges uno y le asignas impostor.
 	}
 	
 	this.asignarencargos=function(partida){
@@ -174,9 +190,14 @@ function Jugando(){
 	}
 	this.abandonarPartida=function(nick,partida){
 		partida.eliminarUsuario(nick);
-
-		//Comprobar si termina la partida
 		
+		if(partida.numImpostores()==0){
+			partida.fase=new Final();
+			console.log("Han ganado los Tripulantes");
+		}else if(partida.numImpostores()>=partida.numTripulantes()){
+			partida.fase=new Final();
+			console.log("Han ganado los impostores");
+		}	
 	}
 }
 
@@ -190,6 +211,9 @@ function Final(){
 	}
 	this.abandonarPartida=function(nick,partida){
 		partida.eliminarUsuario(nick);
+		if (partida.numUsuarios == 0){
+			partida.eliminarPartida();
+		}
 	}
 }
 
