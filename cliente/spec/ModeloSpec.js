@@ -12,6 +12,14 @@ describe("El juego del impostor", function() {
   	expect(usr.nick).toEqual("Pepe");
   	expect(usr.juego).not.toBe(undefined);
   });
+  
+  it("no se puede crear la partida si el numero de participantes no esta dentro de un limite", function() {
+  	var codigo=usr.crearPartida(3);
+	expect(codigo).toBe(undefined);
+	var codigo2=usr.crearPartida(11);
+	expect(codigo2).toBe(undefined);
+  });
+  
 
   describe("el usr crea una partida de 4 jugadores",function(){
 	var codigo;
@@ -27,6 +35,7 @@ describe("El juego del impostor", function() {
 	 	var num=Object.keys(juego.partidas[codigo].usuarios).length;
 	  	expect(num).toEqual(1);
 	  });
+	  
 
 	it("varios usuarios se unen a la partida",function(){
 		juego.unirAPartida(codigo,"ana");
@@ -142,17 +151,9 @@ describe("El juego del impostor", function() {
 			expect(num).toEqual(2);
 		}
 		
-		juego.partidas[codigo].usuarios["isa"].abandonarPartida("isa");
-		expect(juego.partidas[codigo].fase.nombre).toEqual("final");
-		var num=Object.keys(juego.partidas[codigo].usuarios).length;
-		expect(num).toEqual(1);
-		juego.partidas[codigo].usuarios["tomas"].abandonarPartida("tomas");
-		expect(juego.partidas[codigo].fase.nombre).toEqual("final");
-		var num=Object.keys(juego.partidas[codigo].usuarios).length;
-		expect(num).toEqual(0);
-		
 		
 	})
+	
    
    });
    describe("el usr crea una partida de 8 jugadores",function(){
