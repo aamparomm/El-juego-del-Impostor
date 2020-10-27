@@ -118,14 +118,16 @@ function Partida(num,owner,codigo){
 	}
 	this.reiniciarContadores=function(){
 		for(i in this.usuarios){
-			i.votos=0;
-			i.skip=false;
+			this.usuarios[i].votos=0;
+			this.usuarios[i].skip=false;
 		}
 	}
 	this.comprobarVotacion=function(){
 		let elegido=this.masVotado();
-		if(elegido.votos >= this.numeroSkips()){
+		if(elegido.votos > this.numeroSkips()){
 			elegido.esAtacado();
+		}else{
+			this.fase=new Jugando();
 		}
 		this.reiniciarContadores();
 	}
