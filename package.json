@@ -1,0 +1,23 @@
+{
+  "name": "impostor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/jasmine-node servidor"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aamparomm/El-juego-del-Impostor.git"
+  },
+  "author": "AMM",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aamparomm/El-juego-del-Impostor/issues"
+  },
+  "homepage": "https://github.com/aamparomm/El-juego-del-Impostor#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "jasmine-node": "^3.0.0"
+  }
+}

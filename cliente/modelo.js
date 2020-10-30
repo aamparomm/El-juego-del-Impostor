@@ -426,3 +426,5 @@ function inicio2(){
 	juego2.unirAPartida(codigo2,"Juana4");
 	usr.iniciarPartida();
 }
+
+
