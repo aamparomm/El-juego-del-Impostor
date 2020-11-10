@@ -3,7 +3,11 @@ var express = require('express');
 var app = express();
 var server = require('http').Server(app);
 var bodyParser = require("body-parser");
+var io = require('socket.io').listen(server);
 var modelo=require("./servidor/modelo.js");
+var wss=require("./servidor/servidorWS.js");
+
+var servidorWS=new wss.ServidorWS();
 
 app.set('port', process.env.PORT || 5000);
 
@@ -12,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 var juego = new modelo.Juego();
+
 
 app.get('/', function (request, response) {
     var contenido = fs.readFileSync(__dirname + "/cliente/index.html"); 
@@ -31,8 +36,8 @@ app.get("/crearPartida/:nick/:num",function(request,response){
 	var num=parseInt(request.params.num);
 	//ojo, nick nulo o numero nulo
 	//var num=4;
-	var usr=new modelo.Usuario(nick);
-	var codigo=juego.crearPartida(num,usr);
+	//var usr=new modelo.Usuario(nick);
+	var codigo=juego.crearPartida(num,nick);
 
 	response.send({"codigo":codigo});
 });
@@ -52,6 +57,8 @@ app.get("/listarPartidas",function(request,response){
 server.listen(app.get('port'), function () {
     console.log('Node esta escuchando en el puerto', app.get('port'));
 });
+
+servidorWS.lanzarSocketSrv(io,juego);
 //inicio de l index.html, que se ponga a escuchar en el puerto y muestra un mensaje
 
 // app.listen(app.get('port'), function () {

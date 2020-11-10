@@ -9,6 +9,7 @@ function clienteRest(){
 	this.unirAPartida=function(nick,codigo){
 		$.getJSON("/unirAPartida/"+nick+"/"+codigo,function(data){    
     		console.log(data);
+			
 		});
 	}
 	this.listarPartidas=function(){
