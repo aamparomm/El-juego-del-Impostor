@@ -25,13 +25,16 @@ function ServidorWS(){
 		       	cli.enviarRemitente(socket,"partidaCreada",{"codigo":codigo,"owner":nick})		        		        
 		    });
 			socket.on('unirAPartida', function(nick,codigo) {
+				var partida=juego.partidas[codigo];
+				if(partida != undefined){
 				//nick o codigo nulo
-		        console.log('usuario nick: '+nick+" se une a la partida: "+codigo);
-				var res=juego.unirAPartida(codigo,nick);
-				var owner = juego.partidas[codigo].nickOwner;
-				socket.join(codigo);				
-		       	cli.enviarRemitente(socket,"unidoAPartida",{"codigo":codigo,"owner":owner});
-				cli.enviarATodosMenosRemitente(socket,codigo,"nuevo jugador",nick);
+					console.log('usuario nick: '+nick+" se une a la partida: "+codigo);
+					var res=juego.unirAPartida(codigo,nick);
+					var owner = partida.nickOwner;
+					socket.join(codigo);				
+					cli.enviarRemitente(socket,"unidoAPartida",{"codigo":codigo,"owner":owner});
+					cli.enviarATodosMenosRemitente(socket,codigo,"nuevo jugador",nick);
+				}
 		    });
 			socket.on('iniciarPartida', function(nick,codigo) {
 				//para pensar
@@ -102,6 +105,19 @@ function ServidorWS(){
 				//Contestar al remitente con
 				var res=juego.obtenerEncargo(nick,codigo);
 		    	cli.enviarRemitente(socket,"recibirEncargo",res);
+		    });
+			socket.on('listarJugadores', function(codigo) {
+				//para pensar
+				//comprobar si nick es el owner de la partida
+				//Contestar a todos la fase
+				var partida= juego.partidas[codigo];
+				console.log(partida);
+				if (partida !=undefined) {
+					cli.enviarATodos(io,codigo,"RecibirListaJugadores",partida.listarJugadores());
+					cli.enviarRemitente(socket,"RecibirListaJugadores",partida.listarJugadores());
+				}
+				
+				
 		    });
 			
 		});

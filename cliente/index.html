@@ -11,13 +11,20 @@
 	<script src="cliente/src/clienteWS.js"></script>
 	<script src="cliente/src/controlWeb.js"></script>
 	<script src="cliente/src/index.js"></script>
+	<script src="//cdn.jsdelivr.net/npm/phaser@3.16.2/dist/phaser.js"></script>
+    <script src="cliente/src/game.js"></script>
 </head>
-<body>
-	<div class="container-fluid">
+<body >
+	<div class="container-fluid text-center" >
 		<h3>ImpostorAPP</h3>
-		<div id="crearPartida"></div>
-		<div id="unirAPartida"></div>
-		<div id="esperando"></div>
+		<div class="row">
+			<div class="col-sm-6" id="crearPartida"></div>
+			<div class="col-sm-6" id="unirAPartida"></div>
+		</div>
+		<div class="row">
+			<div class="col-sm-6" id="esperando"></div>
+			<div class="col-sm-6" id="listarJugadores"></div>
+		</div>
 	</div>
 
 <script>
@@ -31,3 +38,5 @@
 </script>
 </body>
 </html>
+
+<!body background="cliente/img/among.jpg"style="color:#ffffff;">

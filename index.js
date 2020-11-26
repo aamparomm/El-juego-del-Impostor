@@ -26,6 +26,14 @@ app.get('/', function (request, response) {
     
 });//las peticiones que llegan a ala raiz de mi URL.
 
+app.get('/game', function (request, response) {
+    var contenido = fs.readFileSync(__dirname + "/cliente/index-game.html"); 
+   
+    response.setHeader("Content-type", "text/html");
+    response.send(contenido);
+    
+});
+
 app.get('/nuevoUsuario/:nick',function(request,response){
 	var nick=request.params.nick;
 	var usr=new modelo.Usuario(nick);

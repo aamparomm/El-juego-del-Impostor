@@ -33,14 +33,17 @@ function Juego(){
 		
 		return lista
 	}
+	
 	this.listaPartidasDisponibles=function(){
 		var lista=[];
 		var huecos=0;
+		var maximo=0;
 		for (i in this.partidas){
 			var partida=this.partidas[i];
 			var huecos=partida.obtenerHuecos();
+			maximo= partida.maximo;
 			if(huecos>0){
-				lista.push({"codigo":partida.codigo,"huecos": huecos});
+				lista.push({"codigo":partida.codigo,"huecos": huecos, "maximo": maximo});
 			}
 			
 		}
@@ -111,8 +114,20 @@ function Partida(num,owner,codigo,juego){
 	this.elegido="No hay nadie elegido";
 	this.usuarios={};
 	this.encargos=["basurero","mobiliario","jardinero","calles"];
+	
+	this.listarJugadores=function(){
+		let lista=[];
+		let num=1;
+		for (var i in this.usuarios){
+			var nick= this.usuarios[i].nick;
+			lista.push({"participante":num,"nick":nick});
+			num += 1;
+		}
+		
+		return lista;
+	}
 	this.agregarUsuario=function(nick){
-		this.fase.agregarUsuario(nick,this)
+		this.fase.agregarUsuario(nick,this);
 	}
 	this.puedeAgregarUsuario=function(nick){
 		let nuevo=nick;

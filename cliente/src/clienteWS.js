@@ -11,8 +11,8 @@ function ClienteWS(){
 		this.nick=nick;
 		this.socket.emit("unirAPartida",nick,codigo);
 	}
-	this.iniciarPartida=function(){
-		this.socket.emit("iniciarPartida",this.nick,this.codigo);//,nick,codigo);
+	this.iniciarPartida=function(nick, codigo){
+		this.socket.emit("iniciarPartida",nick,codigo);//,nick,codigo);
 	}
 	
 	this.ini=function(){
@@ -21,6 +21,9 @@ function ClienteWS(){
 	}
 	this.listaPartidas=function(){
 		this.socket.emit("listaPartidas");//,nick,codigo);
+	}
+	this.listarJugadores=function(codigo){
+		this.socket.emit("listarJugadores",codigo);//,nick,codigo);
 	}
 	this.listaPartidasDisponibles=function(){
 		this.socket.emit("listaPartidasDisponibles");//,nick,codigo);
@@ -70,6 +73,11 @@ function ClienteWS(){
 		});
 		this.socket.on('PartidaIniciada',function(fase){
 			console.log("Partida en fase "+fase);
+			lanzarJuego();
+		});
+		this.socket.on('RecibirListaJugadores',function(lista){
+			console.log(lista);
+			cw.mostrarListarJugadores(lista);
 		});
 		this.socket.on('RecibirLista',function(lista){
 			console.log(lista);
@@ -93,6 +101,9 @@ function ClienteWS(){
 		});
 		this.socket.on('recibirEncargo',function(data){
 			console.log(data);
+		});
+		this.socket.on('esperando',function(data){
+			console.log('Esperando....');
 		});
 	}
 	this.ini();
