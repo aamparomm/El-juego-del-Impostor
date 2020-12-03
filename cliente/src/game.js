@@ -30,6 +30,16 @@ const config = {
 //const game = new Phaser.Game(config);
 let cursors;
 let player;
+let player2;
+var jugadores={};//coleccion de jugadores remotos
+let camera;//Sigue al objeto local, a los remotos no les hace caso.
+var worldLayer;
+let map;
+let game;
+var crear;
+var spawnPoint;
+//coleccion para representar a todos los recursos graficos con su posicion.
+var recursos=[{frame:0,sprite:"luis"},{frame:3,sprite:"pepe"},{frame:6,sprite:"juan"},{frame:9,sprite:"pedro"}];
 let showDebug = false;
 
 function preload() {
@@ -41,13 +51,14 @@ function preload() {
   //  https://labs.phaser.io/view.html?src=src/animation/texture%20atlas%20animation.js
   // If you don't use an atlas, you can do the same thing with a spritesheet, see:
   //  https://labs.phaser.io/view.html?src=src/animation/single%20sprite%20sheet.js
-  this.load.spritesheet("gabe","cliente/assets/images/muñeco.png",{frameWidth:36,frameHeight:36});
+  this.load.spritesheet("varios","cliente/assets/images/varios.png",{frameWidth:47,frameHeight:47});
   
   
 }
 
 function create() {
-  const map = this.make.tilemap({ key: "map" });
+  crear=this;
+  map = this.make.tilemap({ key: "map" });
 
   // Parameters are the name you gave the tileset in Tiled and then the key of the tileset image in
   // Phaser's cache (i.e. the name you used in preload)
@@ -67,33 +78,45 @@ function create() {
 
   // Object layers in Tiled let you embed extra info into a map - like a spawn point or custom
   // collision shapes. In the tmx file, there's an object layer with a point named "Spawn Point"
-  const spawnPoint = map.findObject("Objects", obj => obj.name === "Spawn Point");
+  spawnPoint = map.findObject("Objects", obj => obj.name === "Spawn Point");
 
   // Create a sprite with physics enabled via the physics system. The image used for the sprite has
   // a bit of whitespace, so I'm using setSize & setOffset to control the size of the player's body.
-	player = this.physics.add.sprite(spawnPoint.x, spawnPoint.y,"gabe");
+	//player = this.physics.add.sprite(spawnPoint.x, spawnPoint.y,"gabe", recursos[0].frame);
   // Watch the player and worldLayer for collisions, for the duration of the scene:
-  this.physics.add.collider(player, worldLayer);
+  //this.physics.add.collider(player, worldLayer);
 
   // Create the player's walking animations from the texture atlas. These are stored in the global
   // animation manager so any sprite can access them.
-  const anims = this.anims;
+  
+  const anims = crear.anims;
     anims.create({
-    key: "gabe-left-walk",
-      frames: anims.generateFrameNames("gabe", {
+    key: "luis-left-walk",
+      frames: anims.generateFrameNames("luis", {
         //prefix: "misa-left-walk.",
-        start: 9,
-        end: 9,
+        start: 12,
+        end: 14,
         //zeroPad: 3
       }),
       //frameRate: 10,
       repeat: -1
     });
     anims.create({
-      key: "gabe-right-walk",
-      frames: anims.generateFrameNames("gabe", {
+      key: "luis-right-walk",
+      frames: anims.generateFrameNames("luis", {
         //prefix: "misa-left-walk.",
-        start: 3,
+        start: 24,
+        end: 26,
+        //zeroPad: 3
+      }),
+      //frameRate: 10,
+      repeat: -1
+    });
+    anims.create({
+      key: "luis-front-walk",
+      frames: anims.generateFrameNames("luis", {
+        //prefix: "misa-left-walk.",
+        start: 0,
         end: 3,
         //zeroPad: 3
       }),
@@ -101,22 +124,149 @@ function create() {
       repeat: -1
     });
     anims.create({
-      key: "gabe-front-walk",
-      frames: anims.generateFrameNames("gabe", {
+      key: "luis-back-walk",
+      frames: anims.generateFrameNames("luis", {
+        //prefix: "misa-left-walk.",
+        start: 36,
+        end: 38,
+        //zeroPad: 3
+      }),
+      //frameRate: 10,
+      repeat: -1
+    });
+
+  const anims2 = crear.anims;
+    anims2.create({
+    key: "pepe-left-walk",
+      frames: anims2.generateFrameNames("pepe", {
+        //prefix: "misa-left-walk.",
+        start: 12,
+        end: 14,
+        //zeroPad: 3
+      }),
+      //frameRate: 10,
+      repeat: -1
+    });
+    anims2.create({
+      key: "pepe-right-walk",
+      frames: anims2.generateFrameNames("pepe", {
+        //prefix: "misa-left-walk.",
+        start: 24,
+        end: 26,
+        //zeroPad: 3
+      }),
+      //frameRate: 10,
+      repeat: -1
+    });
+    anims2.create({
+      key: "pepe-front-walk",
+      frames: anims2.generateFrameNames("pepe", {
         //prefix: "misa-left-walk.",
         start: 0,
-        end: 0,
+        end: 3,
         //zeroPad: 3
       }),
       //frameRate: 10,
       repeat: -1
     });
-    anims.create({
-      key: "gabe-back-walk",
-      frames: anims.generateFrameNames("gabe", {
+    anims2.create({
+      key: "pepe-back-walk",
+      frames: anims2.generateFrameNames("pepe", {
         //prefix: "misa-left-walk.",
-        start: 6,
-        end: 6,
+        start: 36,
+        end: 38,
+        //zeroPad: 3
+      }),
+      //frameRate: 10,
+      repeat: -1
+    });
+
+  const anims3 = crear.anims;
+    anims3.create({
+    key: "juan-left-walk",
+      frames: anims3.generateFrameNames("juan", {
+        //prefix: "misa-left-walk.",
+        start: 12,
+        end: 14,
+        //zeroPad: 3
+      }),
+      //frameRate: 10,
+      repeat: -1
+    });
+    anims3.create({
+      key: "juan-right-walk",
+      frames: anims3.generateFrameNames("juan", {
+        //prefix: "misa-left-walk.",
+        start: 24,
+        end: 26,
+        //zeroPad: 3
+      }),
+      //frameRate: 10,
+      repeat: -1
+    });
+    anims3.create({
+      key: "juan-front-walk",
+      frames: anims3.generateFrameNames("juan", {
+        //prefix: "misa-left-walk.",
+        start: 0,
+        end: 3,
+        //zeroPad: 3
+      }),
+      //frameRate: 10,
+      repeat: -1
+    });
+    anims3.create({
+      key: "juan-back-walk",
+      frames: anims3.generateFrameNames("juan", {
+        //prefix: "misa-left-walk.",
+        start: 36,
+        end: 38,
+        //zeroPad: 3
+      }),
+      //frameRate: 10,
+      repeat: -1
+    });
+
+  const anims4 = crear.anims;
+    anims4.create({
+    key: "pedro-left-walk",
+      frames: anims.generateFrameNames("pedro", {
+        //prefix: "misa-left-walk.",
+        start: 12,
+        end: 14,
+        //zeroPad: 3
+      }),
+      //frameRate: 10,
+      repeat: -1
+    });
+    anims4.create({
+      key: "pedro-right-walk",
+      frames: anims.generateFrameNames("pedro", {
+        //prefix: "misa-left-walk.",
+        start: 24,
+        end: 26,
+        //zeroPad: 3
+      }),
+      //frameRate: 10,
+      repeat: -1
+    });
+    anims4.create({
+      key: "pedro-front-walk",
+      frames: anims.generateFrameNames("pedro", {
+        //prefix: "misa-left-walk.",
+        start: 0,
+        end: 3,
+        //zeroPad: 3
+      }),
+      //frameRate: 10,
+      repeat: -1
+    });
+    anims4.create({
+      key: "pedro-back-walk",
+      frames: anims.generateFrameNames("pedro", {
+        //prefix: "misa-left-walk.",
+        start: 36,
+        end: 38,
         //zeroPad: 3
       }),
       //frameRate: 10,
@@ -124,44 +274,54 @@ function create() {
     });
 
 
-  const camera = this.cameras.main;
-  camera.startFollow(player);
-  camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
-  cursors = this.input.keyboard.createCursorKeys();
+  //const camera = this.cameras.main;
+  //camera.startFollow(player);
+  //camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
-  // Help text that has a "fixed" position on the screen
-  this.add
-    .text(16, 16, 'Arrow keys to move\nPress "D" to show hitboxes', {
-      font: "18px monospace",
-      fill: "#000000",
-      padding: { x: 20, y: 10 },
-      backgroundColor: "#ffffff"
-    })
-    .setScrollFactor(0)
-    .setDepth(30);
+  cursors = crear.input.keyboard.createCursorKeys();
+  lanzarJugador(ws.nick,ws.numJugador);
+  ws.estoyDentro();
 
-  // Debug graphics
-  this.input.keyboard.once("keydown_D", event => {
-    // Turn on physics debugging to show player's hitbox
-    this.physics.world.createDebugGraphic();
-
-    // Create worldLayer collision graphic above the player, but below the help text
-    const graphics = this.add
-      .graphics()
-      .setAlpha(0.75)
-      .setDepth(20);
-    worldLayer.renderDebug(graphics, {
-      tileColor: null, // Color of non-colliding tiles
-      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-      faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
-    });
-  });
 }
+ function lanzarJugador(nick,numJugador){
+    // player = crear.physics.add
+    //   .sprite(spawnPoint.x, spawnPoint.y, "atlas", "misa-front")
+    //   .setSize(30, 40)
+    //   .setOffset(0, 24);
 
+    player = crear.physics.add.sprite(spawnPoint.x, spawnPoint.y,"varios",recursos[numJugador].frame);
+
+    //player2 = crear.physics.add.sprite(spawnPoint.x+15, spawnPoint.y,"varios",3);
+    
+    //player.play("walk");
+    
+    // Watch the player and worldLayer for collisions, for the duration of the scene:
+    crear.physics.add.collider(player, worldLayer);
+    //crear.physics.add.collider(player2, worldLayer);
+
+    camera = crear.cameras.main;
+    camera.startFollow(player);
+    camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+
+  }
+
+  function lanzarJugadorRemoto(nick,numJugador){
+    var frame=recursos[numJugador].frame;
+    jugadores[nick]=crear.physics.add.sprite(spawnPoint.x+15*numJugador, spawnPoint.y,"varios",frame);   
+    crear.physics.add.collider(player2, worldLayer);
+  }
+  function moverRemoto(direccion, nick, numJugador){
+  const speed=175;
+  var remoto=jugadores[nick];
+  if(direccion=="left"){
+    remoto.body.setVelocityX(-speed);
+  }
+}
 function update(time, delta) {
   const speed = 175;
   const prevVelocity = player.body.velocity.clone();
+  const nombre=recursos[ws.numJugador].sprite;
 
   // Stop any previous movement from the last frame
   player.body.setVelocity(0);
@@ -169,6 +329,7 @@ function update(time, delta) {
   // Horizontal movement
   if (cursors.left.isDown) {
     player.body.setVelocityX(-speed);
+    ws.movimiento("left");
   } else if (cursors.right.isDown) {
     player.body.setVelocityX(speed);
   }
@@ -185,13 +346,13 @@ function update(time, delta) {
 
   // Update the animation last and give left/right animations precedence over up/down animations
   if (cursors.left.isDown) {
-    player.anims.play("gabe-left-walk", true);
+    player.anims.play(nombre+"-left-walk", true);
   } else if (cursors.right.isDown) {
-    player.anims.play("gabe-right-walk", true);
+    player.anims.play(nombre+"-right-walk", true);
   } else if (cursors.up.isDown) {
-    player.anims.play("gabe-back-walk", true);
+    player.anims.play(nombre+"-back-walk", true);
   } else if (cursors.down.isDown) {
-    player.anims.play("gabe-front-walk", true);
+    player.anims.play(nombre+"front-walk", true);
   } else {
     player.anims.stop();
 
@@ -201,4 +362,5 @@ function update(time, delta) {
     else if (prevVelocity.y < 0) player.setTexture("gabe", "gabe-back-walk");
     else if (prevVelocity.y > 0) player.setTexture("gabe", "gabe-front-walk");
   }
+
 }

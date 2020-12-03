@@ -2,12 +2,12 @@ function ControlWeb($){
 	this.mostrarCrearPartida=function(){
 		var cadena='<div id="mostrarCP">';
 		cadena =cadena+ '<div class="form-group">';
-		cadena=cadena +'<label for ="nick">Nick:</label>';
-		cadena=cadena +'<input type="text" class="form-control" size="50" id="nick">';
+		cadena=cadena +'<label for ="nick">Nombre:</label>';
+		cadena=cadena +'<input type="text" class="form-control" size="50" id="nick" placeholder="Escribe un nick">';
 		cadena=cadena +'</div>';
 		cadena =cadena+'<div class="form-group">';
 		cadena=cadena +'<label for ="numero">Numero:</label>';
-		cadena=cadena +'<input type="number" class="form-control" size="50" id="numero" min="4" max="10">';
+		cadena=cadena +'<input type="number" class="form-control" size="50" id="numero" min="4" max="10" placeholder="Numero de jugadores (4-10)">';
 		cadena=cadena +'</div>';
 		cadena=cadena+'<button type="button" id="btnCrearPartida" class="btn btn-info">Crear Partida</button>';
 		cadena=cadena +'</div>';
@@ -30,7 +30,7 @@ function ControlWeb($){
 		$('#mostrarCP').remove();
 		var cadena='<div id="mostrarER">';
 		cadena =cadena+ '<div class="form-group">';
-		cadena=cadena+'<img src="cliente/img/cargando.gif">';
+		cadena=cadena+'<img src="cliente/img/load.gif">';
 		cadena =cadena+ '</div>';
 		cadena =cadena+ '<div class="form-group">';
 		cadena=cadena+'<button type="button" id="btnIniciarPartida" class="btn btn-info">Iniciar Partida</button>';
@@ -43,10 +43,15 @@ function ControlWeb($){
 			$('#mostrarER').remove();
 			$('#mostrarUAP').remove();
 			$('#mostrarCP').remove();
-			ws.iniciarPartida(nick,numero);
-			//Controlar la entrada
-			//mostrar Esperando rival
+			$('#mostrarLJ').remove();
+			ws.iniciarPartida();
 		});
+	}
+	this.limpiar=function(){
+		$('#mostrarER').remove();
+		$('#mostrarUAP').remove();
+		$('#mostrarCP').remove();
+		$('#mostrarLJ').remove();
 	}
 	this.mostrarListarJugadores=function(lista){
 		$('#mostrarLJ').remove();
@@ -56,7 +61,7 @@ function ControlWeb($){
 		cadena=cadena +'<label for ="jugadores">Jugadores:</label>';
 		
 		for(var i=0 ; i<lista.length;i++){
-			cadena =cadena+ '<a href="#" value="'+lista[i].participante+'" class="list-group-item">'+lista[i].participante+' nick: '+lista[i].nick+'</a>';
+			cadena =cadena+ '<a href="#" value="'+lista[i].participante+'" class="list-group-item">Usuario: '+lista[i].nick+'<span class="badge">nº '+lista[i].participante+'</span></a>';
 		}
 		cadena =cadena+ '</div>';
 		cadena =cadena+ '</div>';

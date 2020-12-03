@@ -10,8 +10,8 @@ function ServidorWS(){
     this.enviarATodosMenosRemitente=function(socket,nombre,mens,datos){
         socket.broadcast.to(nombre).emit(mens,datos)
     };
-	this.enviarAalguien=function(socket,nombre,mens,datos){
-        socket.broadcast.to(nombre).emit(mens,datos)
+	this.enviarGlobal=function(socket,mens,datos){
+        socket.broadcast.emit(mens,datos)
     };
 
 	this.lanzarSocketSrv=function(io,juego){
@@ -21,8 +21,11 @@ function ServidorWS(){
 		        //var usr=new modelo.Usuario(nick);
 				var codigo=juego.crearPartida(numero,nick);	
 				console.log('usuario nick: '+nick+" crea partida numero: "+codigo);
-				socket.join(codigo);				
-		       	cli.enviarRemitente(socket,"partidaCreada",{"codigo":codigo,"owner":nick})		        		        
+				socket.join(codigo);
+				var lista= juego.listaPartidasDisponibles();				
+		       	cli.enviarRemitente(socket,"partidaCreada",{"codigo":codigo,"owner":nick});
+		       	//enviar a todos los clientes la lista de partidas disponibles.		
+		       	cli.enviarGlobal(socket,"RecibirListaDisponibles", lista);        		        
 		    });
 			socket.on('unirAPartida', function(nick,codigo) {
 				var partida=juego.partidas[codigo];
@@ -32,8 +35,8 @@ function ServidorWS(){
 					var res=juego.unirAPartida(codigo,nick);
 					var owner = partida.nickOwner;
 					socket.join(codigo);				
-					cli.enviarRemitente(socket,"unidoAPartida",{"codigo":codigo,"owner":owner});
-					cli.enviarATodosMenosRemitente(socket,codigo,"nuevo jugador",nick);
+					cli.enviarRemitente(socket,"unidoAPartida",res);
+					//cli.enviarATodosMenosRemitente(socket,codigo,"nuevo jugador",nick);
 				}
 		    });
 			socket.on('iniciarPartida', function(nick,codigo) {
@@ -42,7 +45,12 @@ function ServidorWS(){
 				//Contestar a todos la fase
 				juego.iniciarPartida(nick,codigo);
 				var fase= juego.partidas[codigo].fase.nombre;
-				cli.enviarATodos(io,codigo,"PartidaIniciada",fase);
+				if(fase=="jugando"){
+					cli.enviarATodos(io,codigo,"PartidaIniciada",fase);
+				}else{
+					cli.enviarRemitente(socket,"esperando",fase);
+				}
+				
 		    });
 			socket.on('listaPartidas', function() {
 				//para pensar
@@ -111,14 +119,29 @@ function ServidorWS(){
 				//comprobar si nick es el owner de la partida
 				//Contestar a todos la fase
 				var partida= juego.partidas[codigo];
-				console.log(partida);
 				if (partida !=undefined) {
 					cli.enviarATodos(io,codigo,"RecibirListaJugadores",partida.listarJugadores());
 					cli.enviarRemitente(socket,"RecibirListaJugadores",partida.listarJugadores());
 				}
-				
-				
-		    });
+			});
+			socket.on('estoyDentro', function(nick,codigo) {
+				//para pensar
+				//comprobar si nick es el owner de la partida
+				//Contestar a todos la fase
+				//
+				var numero=juego.partidas[codigo].usuarios[nick].numJugador;
+				//var usr=juego.obtenerJugador(nick, codigo);
+				//var datos={"nick":nick,"numJugador":numero};
+				var lista=juego.partidas[codigo].listarJugadores();
+				//cli.enviarATodosMenosRemitente(socket,codigo,"dibujarRemoto",datos);
+				cli.enviarRemitente(socket,"dibujarRemoto",lista);
+						
+			});
+			socket.on('movimiento',function(nick,codigo,numJugador, direccion){
+				var datos={"nick":nick,"numJugador":numJugador,"direccion":direccion};
+				cli.enviarATodosMenosRemitente(socket,codigo,"moverRemoto",datos);
+
+			});
 			
 		});
 		
